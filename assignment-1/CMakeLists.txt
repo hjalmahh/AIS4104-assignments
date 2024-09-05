@@ -1,6 +1,7 @@
 find_package(Eigen3 CONFIG REQUIRED)
 
 add_executable(test main.cpp
+        ../math/include/math/math.h
 
 
 )
