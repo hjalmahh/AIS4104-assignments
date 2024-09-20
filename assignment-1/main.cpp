@@ -1,5 +1,5 @@
 #include <iostream>
-#include <eigen/dense>
+#include <Eigen/Dense>
 #include <cmath>
 
 
@@ -7,11 +7,11 @@
  double deg_to_rad(double degrees)
 
 {
-    return degrees * M_PI/180;
+    return degrees * 0.0174533;
 }
 double rad_to_deg(double radians)
 {
-    return radians * 180 / M_PI;
+    return radians * 57.2958;
 }
 
 /*
