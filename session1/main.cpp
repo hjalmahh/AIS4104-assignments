@@ -19,6 +19,7 @@ int main()
     std::cout << "Ea: " << ea.transpose() * math::rad_to_deg << std::endl;
 
     //task 2 a
+    std::cout <<"`\n Task 2 " << std::endl;
     Eigen::Vector3d fw (-30,0,0) ;
     Eigen::Vector3d ts (0,0,2);
     Eigen::Vector3d ews = Eigen::Vector3d{60,-60, 0} * math::deg_to_rad;
@@ -34,7 +35,7 @@ int main()
     std::cout <<  "torque sensor : " << ts.transpose() << "\n" << std::endl;
 
     Eigen::VectorXd ff = math::wrench_sum();
-    std::cout << "example result; \n ff " << ff.transpose() << std::endl;
+    std::cout << "example result 2b; \n ff " << ff.transpose() << std::endl;
 
     std::cout <<"\n --------------NEW TASK----------------------" << std::endl;
 
@@ -59,7 +60,7 @@ int main()
     for (const std::vector<double> &positions : joint_test_position) {
         Eigen::Matrix4d T = math::planar_3r_fk_transform(positions);
         std::cout << "----------------------------------------" << std::endl;
-        math::print_pose("Task 4b position for joint positions: [" + std::to_string(positions[0]) + ", " + std::to_string(positions[1]) + ", " + std::to_string(positions[2]) + "]", T);
+        math::print_pose("Pose for joint positions: [" + std::to_string(positions[0]) + ", " + std::to_string(positions[1]) + ", " + std::to_string(positions[2]) + "]", T);
     }
 
 
@@ -69,7 +70,7 @@ int main()
     for (const std::vector<double> &positions : joint_test_position) {
         Eigen::Matrix4d Task4c = math::planar_3r_fk_screw(positions);
         std::cout << "----------------------------------------" << std::endl;
-        math::print_pose("task 4c position for joint positions: [" + std::to_string(positions[0]) + ", " + std::to_string(positions[1]) + ", " + std::to_string(positions[2]) + "]", Task4c);
+        math::print_pose("Pose for joint positions: [" + std::to_string(positions[0]) + ", " + std::to_string(positions[1]) + ", " + std::to_string(positions[2]) + "]", Task4c);
     }
 
     std::cout <<"\n ----------------NEW TASK--------------------" << std::endl;
@@ -80,8 +81,8 @@ int main()
 
     std::vector<std::vector<double>> joint_test_position_5 = {
         {0.0, 0.0, 0.0, -90.0, 0.0, 0.0},
-        {0.0, -90, 90, 0.0, 0.0, 0.0},
-        {0.0, 0.0, -90,  0.0, 0.0, 0.0}
+        {0.0, -180, 0.0, 0.0, 0.0, 0.0},
+        {0.0, -90, 0.0, 0.0, 0.0, 0.0}
     };
 
     std::cout <<"\nTask 5a " << std::endl;
@@ -91,22 +92,9 @@ int main()
     {
         Eigen::Matrix4d Task5a = math::ur3e_fk_screw(positions);
         std::cout << "----------------------------------------" << std::endl;
-        math::print_pose("Task 5a position for joint positions: [" + std::to_string(positions[0]) + ", " + std::to_string(positions[1]) + ", " + std::to_string(positions[2]) + ", " + std::to_string(positions[3]) + ", " + std::to_string(positions[4]) + ", " + std::to_string(positions[5]) + "]", Task5a);
+        math::print_pose("Task 5 pose for joint positions: [" + std::to_string(positions[0]) + ", " + std::to_string(positions[1]) + ", " + std::to_string(positions[2]) + ", " + std::to_string(positions[3]) + ", " + std::to_string(positions[4]) + ", " + std::to_string(positions[5]) + "]", Task5a);
 
     }
-
-    std::cout <<"\nTask 5b " << std::endl;
-
-    std::cout << "\n Calculate forward kinematics using homogeneous transformation matrices.\n" << std::endl;
-    for (const std::vector<double> &positions : joint_test_position_5)
-    {
-        Eigen::Matrix4d Task5a = math::ur3e_fk_transform(positions);
-        std::cout << "----------------------------------------" << std::endl;
-        math::print_pose("Task 5b position for joint positions: [" + std::to_string(positions[0]) + ", " + std::to_string(positions[1]) + ", " + std::to_string(positions[2]) + ", " + std::to_string(positions[3]) + ", " + std::to_string(positions[4]) + ", " + std::to_string(positions[5]) + "]", Task5a);
-
-    }
-
-
     return 0;
 }
 
