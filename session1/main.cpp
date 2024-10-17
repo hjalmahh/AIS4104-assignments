@@ -60,7 +60,7 @@ int main()
     for (const std::vector<double> &positions : joint_test_position) {
         Eigen::Matrix4d T = math::planar_3r_fk_transform(positions);
         std::cout << "----------------------------------------" << std::endl;
-        math::print_pose("Pose for joint positions: [" + std::to_string(positions[0]) + ", " + std::to_string(positions[1]) + ", " + std::to_string(positions[2]) + "]", T);
+        math::print_pose(T, "Pose for joint positions: [" + std::to_string(positions[0]) + ", " + std::to_string(positions[1]) + ", " + std::to_string(positions[2]) + "]");
     }
 
 
@@ -70,7 +70,7 @@ int main()
     for (const std::vector<double> &positions : joint_test_position) {
         Eigen::Matrix4d Task4c = math::planar_3r_fk_screw(positions);
         std::cout << "----------------------------------------" << std::endl;
-        math::print_pose("Pose for joint positions: [" + std::to_string(positions[0]) + ", " + std::to_string(positions[1]) + ", " + std::to_string(positions[2]) + "]", Task4c);
+        math::print_pose(Task4c, "Pose for joint positions: [" + std::to_string(positions[0]) + ", " + std::to_string(positions[1]) + ", " + std::to_string(positions[2]) + "]");
     }
 
     std::cout <<"\n ----------------NEW TASK--------------------" << std::endl;
@@ -92,7 +92,7 @@ int main()
     {
         Eigen::Matrix4d Task5a = math::ur3e_fk_screw(positions);
         std::cout << "----------------------------------------" << std::endl;
-        math::print_pose("Task 5 pose for joint positions: [" + std::to_string(positions[0]) + ", " + std::to_string(positions[1]) + ", " + std::to_string(positions[2]) + ", " + std::to_string(positions[3]) + ", " + std::to_string(positions[4]) + ", " + std::to_string(positions[5]) + "]", Task5a);
+        math::print_pose(Task5a, "Task 5 pose for joint positions: [" + std::to_string(positions[0]) + ", " + std::to_string(positions[1]) + ", " + std::to_string(positions[2]) + ", " + std::to_string(positions[3]) + ", " + std::to_string(positions[4]) + ", " + std::to_string(positions[5]) + "]");
 
     }
     return 0;

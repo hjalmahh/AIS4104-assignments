@@ -9,5 +9,8 @@ add_subdirectory(assignment-1)
 
 add_subdirectory(math)
 add_subdirectory(session1)
+add_subdirectory(assigment-3)
+
 
 add_dependencies(session1 math)
+add_dependencies(assigment-3 math)
