@@ -237,7 +237,7 @@ Eigen::Matrix3d math::matrix_exponential(const Eigen::Vector3d& w, double theta)
 {
     Eigen::Matrix3d skew_w{skew_symmetric(w)};
     Eigen::Matrix3d matrix_i = Eigen::Matrix3d::Identity();
-    const double radians = theta * deg_to_rad;
+    const double radians = theta;
 
     return matrix_i + std::sin(radians) * skew_w + (1.0 - std::cos(radians)) * skew_w * skew_w;
 }
@@ -285,7 +285,7 @@ std::pair<Eigen::Vector3d, double> math::matrix_logarithm(const Eigen::Matrix3d&
 
 Eigen::Matrix4d math::matrix_exponential(const Eigen::Vector3d& w, const Eigen::Vector3d& v, double theta)
 {
-    const double radians = theta * deg_to_rad;
+    const double radians = theta;
     Eigen::Matrix4d T = Eigen::Matrix4d::Zero();
     if (floatEquals(w.norm(), 1.0))
     {
@@ -319,7 +319,7 @@ Eigen::Matrix3d math::G(const Eigen::Vector3d& w, const double& theta)
 {
     Eigen::Matrix3d matrix_i = Eigen::Matrix3d::Identity();
     Eigen::Matrix3d skew_w = skew_symmetric(w);
-    const double radians = theta * deg_to_rad;
+    const double radians = theta;
     ///DOBBELSJEKK RETURN!!!!
     return matrix_i * radians + (1 - std::cos(radians)) * skew_w + (radians - std::sin(radians)) * skew_w * skew_w;
 }
@@ -328,7 +328,7 @@ Eigen::Matrix3d math::G_inv(const Eigen::Vector3d& w, const double& theta)
 {
     Eigen::Matrix3d matrix_i = Eigen::Matrix3d::Identity();
     Eigen::Matrix3d skew_w{skew_symmetric(w)};
-    const double radians = theta * deg_to_rad;
+    const double radians = theta;
 
     return matrix_i * 1 / radians - 0.5 * skew_w + (1 / radians - 0.5 * cot(radians / 2)) * skew_w * skew_w;
 }
@@ -383,9 +383,9 @@ Eigen::Matrix4d math::planar_3r_fk_transform(const std::vector<double>& joint_po
 {
     constexpr double l1 = 10, l2 = 10, l3 = 10;
     //Joint positions
-    double theta1 = joint_positions[0] * deg_to_rad;
-    double theta2 = joint_positions[1] * deg_to_rad;
-    double theta3 = joint_positions[2] * deg_to_rad;
+    double theta1 = joint_positions[0] ;
+    double theta2 = joint_positions[1];
+    double theta3 = joint_positions[2];
 
     //The homogenus transfer matrix for the joints
     Eigen::Matrix4d T01 = transformation_matrix(rotate_z(theta1), Eigen::Vector3d(0, 0, 0));
@@ -505,12 +505,12 @@ Eigen::Matrix4d math::ur3e_fk_transform(const std::vector<double>& joint_positio
 
     //joit positions
 
-    double theta1 = joint_positions[0] * deg_to_rad;
-    double theta2 = joint_positions[1] * deg_to_rad;
-    double theta3 = joint_positions[2] * deg_to_rad;
-    double theta4 = joint_positions[3] * deg_to_rad;
-    double theta5 = joint_positions[4] * deg_to_rad;
-    double theta6 = joint_positions[5] * deg_to_rad;
+    double theta1 = joint_positions[0] ;
+    double theta2 = joint_positions[1] ;
+    double theta3 = joint_positions[2] ;
+    double theta4 = joint_positions[3] ;
+    double theta5 = joint_positions[4] ;
+    double theta6 = joint_positions[5] ;
 
 
     //joit positions
@@ -667,7 +667,6 @@ std::pair<uint32_t, double> math::newton_raphson_root_find(const std::function<d
 }
 
 //task 2b
-//------------------------IKKERIKTIG MÅ ORDNES-----------------
 
 std::pair<uint32_t, double> math::gradient_descent_root_find(const std::function<double(double)>& f, double x_0,
                                                              double gamma, double dx_0, double eps)
@@ -735,7 +734,7 @@ Eigen::MatrixXd math::ur3e_body_jacobian(const Eigen::VectorXd& current_joint_po
 
         for (int i = num_joints - 1; i != -1; i--)
         {
-            std::cout << "Screw " << i << ": " << screws[i].transpose() << std::endl;
+            //std::cout << "Screw " << i << ": " << screws[i].transpose() << std::endl;
             jac_body.col(i) = math::adjoint_matrix(T) * screws[i];
 
             T = T * math::matrix_exponential(screws[i], current_joint_positions[i]).inverse();
@@ -756,33 +755,42 @@ std::pair<size_t, Eigen::VectorXd> math::ur3e_ik_body(const Eigen::Matrix4d& t_s
 {
     int max_iter = 10000; //max iterations it wil run
     int iter_count = 0; //counts iterations
+    double theta;
     Eigen::VectorXd v_b(6);
+    Eigen::VectorXd cu_jp = current_joint_positions;
 
-    Eigen::VectorXd theta = current_joint_positions;
+    Eigen::Matrix4d t_sb = ur3e_space_fk(cu_jp);
+    Eigen::Matrix4d t_bd = (t_sb).inverse() * t_sd;
+
+    std::tie(v_b, theta) = math::matrix_logarithm(t_bd);
+    v_b *= theta;
+    Eigen::MatrixXd jac_body;
     //the configuration of the robot from where to start the numerical solver/algorithm.
 
-    std::pair<Eigen::VectorXd, double> p;
 
+    std::pair<Eigen::VectorXd, double> p;
     while ((v_b.head(3).norm() > v_e) || (v_b.tail(3).norm() > w_e))
     {
-        Eigen::Matrix4d t_sb = math::ur3e_space_fk(theta);
+        Eigen::MatrixXd jac = math::ur3e_body_jacobian(cu_jp);
+        cu_jp += gamma * jac.completeOrthogonalDecomposition().pseudoInverse() * v_b;
+
+        Eigen::Matrix4d t_sb = math::ur3e_space_fk(cu_jp);
 
         Eigen::Matrix4d t_bd = t_sb.inverse() * t_sd;
 
-        p = math::matrix_logarithm(t_bd);
-        v_b = p.first * p.second;
+        std::tie(v_b, theta) = math::matrix_logarithm(t_bd);
+        v_b *= theta;
 
-        Eigen::MatrixXd jac = math::ur3e_space_jacobian(theta);
-        theta += gamma * jac.completeOrthogonalDecomposition().pseudoInverse() * v_b;
+
 
         if (iter_count > max_iter)
         {
-            return std::make_pair(iter_count, theta);
+            return std::make_pair(iter_count, cu_jp);
         }
 
         iter_count++;
         //std::cout << iter_count << std::endl;
     }
     //psudo invers funksjon CompleteOrthogonalDecomposition
-    return std::make_pair(iter_count, theta);
+    return std::make_pair(iter_count, cu_jp);
 }

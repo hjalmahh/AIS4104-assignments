@@ -8,24 +8,24 @@ void ur3e_test_fk()
 {
     std::cout << "Forward kinematics tests" << std::endl;
     std::cout << "----------ur3e_space_fk-------------" << std::endl;
-    math::print_pose(math::ur3e_space_fk(math::std_vector_to_eigen(std::vector<double>{0.0, 0.0, 0.0, 0.0, 0.0, 0.0})));
+    math::print_pose(math::ur3e_space_fk(math::std_vector_to_eigen(std::vector<double>{0.0, 0.0, 0.0, 0.0, 0.0, 0.0})*math::deg_to_rad));
     std::cout << "----------ur3e_body_fk-------------" << std::endl;
-    math::print_pose(math::ur3e_body_fk(math::std_vector_to_eigen(std::vector<double>{0.0, 0.0, 0.0, 0.0, 0.0, 0.0})));
+    math::print_pose(math::ur3e_body_fk(math::std_vector_to_eigen(std::vector<double>{0.0, 0.0, 0.0, 0.0, 0.0, 0.0})*math::deg_to_rad));
     std::cout << std::endl;
     std::cout << "----------ur3e_space_fk-------------" << std::endl;
-    math::print_pose(math::ur3e_space_fk(math::std_vector_to_eigen(std::vector<double>{0.0, 0.0, 0.0, -90.0, 0.0, 0.0}) ));
+    math::print_pose(math::ur3e_space_fk(math::std_vector_to_eigen(std::vector<double>{0.0, 0.0, 0.0, -90.0, 0.0, 0.0})*math::deg_to_rad));
     std::cout << "----------ur3e_body_fk-------------" << std::endl;
-    math::print_pose(math::ur3e_body_fk(math::std_vector_to_eigen(std::vector<double>{0.0, 0.0, 0.0, -90.0, 0.0, 0.0})));
+    math::print_pose(math::ur3e_body_fk(math::std_vector_to_eigen(std::vector<double>{0.0, 0.0, 0.0, -90.0, 0.0, 0.0})*math::deg_to_rad));
     std::cout << std::endl;
     std::cout << "----------ur3e_space_fk-------------" << std::endl;
-    math::print_pose(math::ur3e_space_fk(math::std_vector_to_eigen(std::vector<double>{0.0, 0.0, -180.0, 0.0, 0.0, 0.0})));
+    math::print_pose(math::ur3e_space_fk(math::std_vector_to_eigen(std::vector<double>{0.0, 0.0, -180.0, 0.0, 0.0, 0.0})*math::deg_to_rad));
     std::cout << "----------ur3e_body_fk-------------" << std::endl;
-    math::print_pose(math::ur3e_body_fk(math::std_vector_to_eigen(std::vector<double>{0.0, 0.0, -180.0, 0.0, 0.0, 0.0})));
+    math::print_pose(math::ur3e_body_fk(math::std_vector_to_eigen(std::vector<double>{0.0, 0.0, -180.0, 0.0, 0.0, 0.0})*math::deg_to_rad));
     std::cout << std::endl;
     std::cout << "----------ur3e_space_fk-------------" << std::endl;
-    math::print_pose(math::ur3e_space_fk(math::std_vector_to_eigen(std::vector<double>{0.0, 0.0, -90.0, 0.0, 0.0, 0.0})));
+    math::print_pose(math::ur3e_space_fk(math::std_vector_to_eigen(std::vector<double>{0.0, 0.0, -90.0, 0.0, 0.0, 0.0})*math::deg_to_rad));
     std::cout << "----------ur3e_body_fk-------------" << std::endl;
-    math::print_pose(math::ur3e_body_fk(math::std_vector_to_eigen(std::vector<double>{0.0, 0.0, -90.0, 0.0, 0.0, 0.0})));
+    math::print_pose(math::ur3e_body_fk(math::std_vector_to_eigen(std::vector<double>{0.0, 0.0, -90.0, 0.0, 0.0, 0.0})*math::deg_to_rad));
 }
 
 void test_newton_raphson_root_find(const std::function<double(double)> &f, double x0)
@@ -69,8 +69,8 @@ void ur3e_test_jacobian(const Eigen::VectorXd &joint_positions)
 void ur3e_test_jacobian()
 {
     std::cout << "Jacobian matrix tests" << std::endl;
-    ur3e_test_jacobian(math::std_vector_to_eigen(std::vector<double>{0.0, 0.0, 0.0, 0.0, 0.0, 0.0}) );
-    ur3e_test_jacobian(math::std_vector_to_eigen(std::vector<double>{45.0, -20.0, 10.0, 2.5, 30.0, -50.0}));
+    ur3e_test_jacobian(math::std_vector_to_eigen(std::vector<double>{0.0, 0.0, 0.0, 0.0, 0.0, 0.0}) *math::deg_to_rad);
+    ur3e_test_jacobian(math::std_vector_to_eigen(std::vector<double>{45.0, -20.0, 10.0, 2.5, 30.0, -50.0})*math::deg_to_rad);
 }
 
 
@@ -116,11 +116,11 @@ ur3e_ik_test_configuration(j_d1, j_t2);
 
 int main()
 {
-    //ur3e_test_fk();
+    ur3e_test_fk();
 
-    //test_root_find();
+    test_root_find();
 
-    //ur3e_test_jacobian();
+    ur3e_test_jacobian();
     ur3e_ik_test();
     return 0;
 }
